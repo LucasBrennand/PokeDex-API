@@ -8,7 +8,7 @@ const getPokemonArray = async () => {
       for (i of data.results) {
         pokemonArray.push(i);
       }
-      console.log(pokemonArray);
+    //   console.log(pokemonArray);
       offset += 3;
     })
     .catch((error) => console.error("Get pokemon api error:", error));
@@ -16,9 +16,10 @@ const getPokemonArray = async () => {
 
 //Bulbassaur example
 const getPokemonInfo = async () => {
+    const pokemonInfoArray = []
   try {
     for (pokemon of pokemonArray) {
-      console.log(pokemon.name);
+    //   console.log(pokemon.name);
       const sprite = await getPokemonSprite(pokemon.url);
       if (sprite == undefined) {
         throw new Error("Sprites undefined");
@@ -27,9 +28,10 @@ const getPokemonInfo = async () => {
       if (abilites == undefined) {
         throw new Error("Abilities undefined");
       }
-      console.log(sprite);
-      console.log(abilites);
+      const pokemonInfo = createPokemonInfo(pokemon.name, sprite, abilites)
+      pokemonInfoArray.push(pokemonInfo)
     }
+    return pokemonInfoArray
   } catch (error) {
     console.error(error);
   }
@@ -59,10 +61,19 @@ const fetchPokemonAbilities = async (link) => {
     .catch((error) => console.error("Error fetching abilities", error));
 };
 
+const createPokemonInfo = (name, sprite, abilites) => {
+    const pokemonInfo = {
+        name: name,
+        sprite: sprite,
+        abilites: abilites
+    }
+    return pokemonInfo
+}
+
 const main = async () => {
   await getPokemonArray();
   await getPokemonArray();
-  await getPokemonInfo();
+  console.log(await getPokemonInfo());
 };
 
 main();
