@@ -1,0 +1,13 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+:root{
+  --primary-color: grey;
+  --bg-primary-color: rgb(236, 217, 217);
+}
+
+body{
+  background-color: var(--bg-primary-color);
+}
