@@ -2,14 +2,14 @@ const pokemonArray = [];
 let offset = 0;
 
 const getPokemonArray = async () => {
-  await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=3`)
+  await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=4`)
     .then((response) => response.json())
     .then((data) => {
-      for (i of data.results) {
+      for (const i of data.results) {
         pokemonArray.push(i);
       }
     //   console.log(pokemonArray);
-      offset += 3;
+      offset += 4;
     })
     .catch((error) => console.error("Get pokemon api error:", error));
 };
@@ -18,17 +18,21 @@ const getPokemonArray = async () => {
 const getPokemonInfo = async () => {
     const pokemonInfoArray = []
   try {
-    for (pokemon of pokemonArray) {
+    for (const pokemon of pokemonArray) {
     //   console.log(pokemon.name);
       const sprite = await getPokemonSprite(pokemon.url);
       if (sprite == undefined) {
         throw new Error("Sprites undefined");
       }
-      const abilites = await fetchPokemonAbilities(pokemon.url);
+      const abilites = await getPokemonAbilities(pokemon.url);
       if (abilites == undefined) {
         throw new Error("Abilities undefined");
       }
-      const pokemonInfo = createPokemonInfo(pokemon.name, sprite, abilites)
+      const types = await getPokemonTypes(pokemon.url);
+      if (types == undefined) {
+        throw new Error("Types undefined");
+      }
+      const pokemonInfo = createPokemonInfo(pokemon.name, sprite, abilites, types)
       pokemonInfoArray.push(pokemonInfo)
     }
     return pokemonInfoArray
@@ -48,12 +52,12 @@ const getPokemonSprite = async (link) => {
     .catch((error) => console.error("Error fetching abilities", error));
 };
 
-const fetchPokemonAbilities = async (link) => {
+const getPokemonAbilities = async (link) => {
   const abilites = [];
   return fetch(link)
     .then((response) => response.json())
     .then((data) => {
-      for (i of data.abilities) {
+      for (const i of data.abilities) {
         abilites.push(i.ability.name);
       }
       return abilites;
@@ -61,13 +65,31 @@ const fetchPokemonAbilities = async (link) => {
     .catch((error) => console.error("Error fetching abilities", error));
 };
 
-const createPokemonInfo = (name, sprite, abilites) => {
+const getPokemonTypes = async (link) => {
+  const types = [];
+  return fetch(link)
+    .then((response) => response.json())
+    .then((data) => {
+      for (const i of data.types) {
+        types.push(i.type.name);
+      }
+      return types;
+    })
+    .catch((error) => console.error("Error fetching abilities", error));
+};
+
+const createPokemonInfo = (name, sprite, abilites, types) => {
     const pokemonInfo = {
         name: name,
         sprite: sprite,
-        abilites: abilites
+        abilites: abilites,
+        types: types
     }
     return pokemonInfo
+}
+
+const createPokemonCard = () => {
+
 }
 
 const main = async () => {
