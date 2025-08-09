@@ -1,3 +1,4 @@
+// const container = document.querySelector("#container");
 const pokemonArray = [];
 let offset = 0;
 
@@ -88,14 +89,45 @@ const createPokemonInfo = (name, sprite, abilites, types) => {
     return pokemonInfo
 }
 
-const createPokemonCard = () => {
+const createPokemonCard = async () => {
+const pokemonObject = await getPokemonInfo()
+pokemonObject.forEach(pokemon => {
+  const newCard = document.createElement("div")
+  container.appendChild(newCard)
+  newCard.innerHTML = `
+  <div class="card">
+      <div class="card-header">
+        <h1>${pokemon.name}</h1>
+        <img width="200px" src="${pokemon.sprite}" alt="pokemon-img">
+        <ul class="list-container type-list">
+          <li>Grass</li>
+          <li>Poison</li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <ul class="list-container moves-list">
+          <li>Overgrow</li>
+          <li>Chlorophyll</li>
+          <li>Poison</li>
 
+          <li>Poison</li>
+
+          <li>Poison</li>
+          <li>Poison</li>
+          
+
+        </ul>
+      </div>
+    </div>
+  `
+});
 }
 
 const main = async () => {
   await getPokemonArray();
   await getPokemonArray();
   console.log(await getPokemonInfo());
+  await createPokemonCard(getPokemonInfo())
 };
 
 main();
