@@ -8,9 +8,10 @@
 
 :root{
   --primary-color: rgb(245, 244, 244);
-  --text-color: black;
+  --text-color: rgb(255, 255, 255);
+  --text-color-seconday: black;
   --bg-primary-color: rgb(22, 20, 20);
-  --bg-secondary-color: grey;
+  --bg-secondary-color: rgb(189, 187, 187);
   --primary-font: "Pixelify Sans", serif;
   --font-weight: 400;
 }
@@ -52,6 +53,10 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--text-color-seconday);
+  h1{
+    font-size: 20px;
+  }
 }
 
 .list-container{
@@ -83,6 +88,11 @@ body{
   li{
     min-width: 130px;
     background-color: var(--bg-secondary-color);
-    color: var(--bg-primary-color);
+    color: var(--text-color);
   }
+}
+
+.load-btn{
+  background-color: var(--bg-secondary-color);
+  cursor: pointer;
 }

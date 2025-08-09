@@ -1,4 +1,5 @@
-// const container = document.querySelector("#container");
+const container = document.querySelector("#container");
+const loadBtn = document.querySelector(".load-btn")
 const pokemonArray = [];
 let offset = 0;
 let movesListCounter = 0;
@@ -121,7 +122,84 @@ const createPokemonCard = async () => {
     for (const element of pokemon.types) {
       const newType = document.createElement("li");
       typesList.appendChild(newType);
-      newType.innerText = element;
+      newType.innerText = element.toUpperCase();
+
+      switch (element) {
+        case "fire":
+          newType.style.backgroundColor = "red"
+          break;
+        case "grass":
+          newType.style.backgroundColor = "green"
+          break;
+        case "poison":
+          newType.style.backgroundColor = "purple"
+          break;
+        case "water":
+          newType.style.backgroundColor = "blue"
+          break;
+        case "flying":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "normal":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "fighting":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "ground":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "rock":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "bug":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "ghost":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "eletric":
+          newType.style.backgroundColor = "yellow"
+          break;
+        case "psychic":
+          newType.style.backgroundColor = "pink"
+          break;
+        case "ice":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "dragon":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "dark":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "steel":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "fairy":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "food":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "slug":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "plastic":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "wind":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "crystal":
+          newType.style.backgroundColor = "grey"
+          break;
+        case "light":
+          newType.style.backgroundColor = "grey"
+          break;      
+        default:
+          break;
+      }
     }
 
     const movesList = document.querySelector(`.moves-list-${movesListCounter}`);
@@ -137,9 +215,14 @@ const createPokemonCard = async () => {
 
 const main = async () => {
   await getPokemonArray();
-  await getPokemonArray();
   console.log(await getPokemonInfo());
   await createPokemonCard(getPokemonInfo());
 };
 
-main();
+loadBtn.addEventListener("click", async (event) => {
+  container.innerHTML = ""
+  await getPokemonArray();
+  console.log(await getPokemonInfo());
+  await createPokemonCard(getPokemonInfo());
+})
+
