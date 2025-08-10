@@ -106,19 +106,19 @@ const createPokemonCard = async () => {
       <div class="card-header">
         <h1>${pokemon.name}</h1>
         <img width="200px" src="${pokemon.sprite}" alt="pokemon-img">
-        <ul class="list-container type-list types-list-${typesListCounter}">
+        <ul class="list-container type-list" id="types-list-${typesListCounter}">
           
         </ul>
       </div>
       <div class="card-body">
-        <ul class="list-container moves-list moves-list-${movesListCounter}">
+        <ul class="list-container moves-list" id="moves-list-${movesListCounter}">
           
         </ul>
       </div>
     </div>
   `;
 
-    const typesList = document.querySelector(`.types-list-${typesListCounter}`);
+    const typesList = document.querySelector(`#types-list-${typesListCounter}`);
     for (const element of pokemon.types) {
       const newType = document.createElement("li");
       typesList.appendChild(newType);
@@ -138,46 +138,46 @@ const createPokemonCard = async () => {
           newType.style.backgroundColor = "blue"
           break;
         case "flying":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(140, 137, 226, 0.877)"
           break;
         case "normal":
           newType.style.backgroundColor = "grey"
           break;
         case "fighting":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(158, 37, 35, 0.877)"
           break;
         case "ground":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgb(234, 181, 36)"
           break;
         case "rock":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(151, 138, 23, 0.877)"
           break;
         case "bug":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(139, 213, 79, 0.877)"
           break;
         case "ghost":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(65, 46, 209, 0.877)"
           break;
-        case "eletric":
+        case "electric":
           newType.style.backgroundColor = "yellow"
           break;
         case "psychic":
-          newType.style.backgroundColor = "pink"
+          newType.style.backgroundColor = "rgba(240, 13, 160, 0.877)"
           break;
         case "ice":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(136, 238, 240, 0.877)"
           break;
         case "dragon":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(174, 102, 242, 0.877)"
           break;
         case "dark":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgba(79, 35, 32, 0.877)"
           break;
         case "steel":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgb(199, 199, 199)"
           break;
         case "fairy":
-          newType.style.backgroundColor = "grey"
+          newType.style.backgroundColor = "rgb(242, 197, 230)"
           break;
         case "food":
           newType.style.backgroundColor = "grey"
@@ -202,7 +202,7 @@ const createPokemonCard = async () => {
       }
     }
 
-    const movesList = document.querySelector(`.moves-list-${movesListCounter}`);
+    const movesList = document.querySelector(`#moves-list-${movesListCounter}`);
     for (const element of pokemon.abilites) {
       const newAbility = document.createElement("li");
       movesList.appendChild(newAbility);
@@ -219,8 +219,7 @@ const main = async () => {
   await createPokemonCard(getPokemonInfo());
 };
 
-loadBtn.addEventListener("click", async (event) => {
-  container.innerHTML = ""
+loadBtn.addEventListener("click", async () => {
   await getPokemonArray();
   console.log(await getPokemonInfo());
   await createPokemonCard(getPokemonInfo());
