@@ -1,44 +1,42 @@
 const container = document.querySelector("#container");
-const loadBtn = document.querySelector(".load-btn")
+const loadBtn = document.querySelector(".load-btn");
 const pokemonArray = [];
 let offset = 0;
 let movesListCounter = 0;
 let typesListCounter = 0;
 
 const getPokemonArray = async () => {
+  const newPokemons = [];
   await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=4`)
     .then((response) => response.json())
     .then((data) => {
       for (const i of data.results) {
-        pokemonArray.push(i);
+        pokemonArray.push(i); 
+        newPokemons.push(i); 
       }
-      //   console.log(pokemonArray);
       offset += 4;
     })
     .catch((error) => console.error("Get pokemon api error:", error));
+  return newPokemons;
 };
 
-const getPokemonInfo = async () => {
+const getPokemonInfo = async (pokemonList) => {
   const pokemonInfoArray = [];
   try {
-    for (const pokemon of pokemonArray) {
-      //   console.log(pokemon.name);
+    for (const pokemon of pokemonList) { // only loop new batch
       const sprite = await getPokemonSprite(pokemon.url);
-      if (sprite == undefined) {
-        throw new Error("Sprites undefined");
-      }
-      const abilites = await getPokemonAbilities(pokemon.url);
-      if (abilites == undefined) {
-        throw new Error("Abilities undefined");
-      }
+      if (!sprite) throw new Error("Sprites undefined");
+
+      const abilities = await getPokemonAbilities(pokemon.url);
+      if (!abilities) throw new Error("Abilities undefined");
+
       const types = await getPokemonTypes(pokemon.url);
-      if (types == undefined) {
-        throw new Error("Types undefined");
-      }
+      if (!types) throw new Error("Types undefined");
+
       const pokemonInfo = createPokemonInfo(
         pokemon.name,
         sprite,
-        abilites,
+        abilities,
         types
       );
       pokemonInfoArray.push(pokemonInfo);
@@ -47,28 +45,24 @@ const getPokemonInfo = async () => {
   } catch (error) {
     console.error(error);
   }
-
-  // await fetch('https://pokeapi.co/api/v2/pokemon/1')
 };
 
 const getPokemonSprite = async (link) => {
   return fetch(link)
     .then((response) => response.json())
-    .then((data) => {
-      return data.sprites.front_default;
-    })
-    .catch((error) => console.error("Error fetching abilities", error));
+    .then((data) => data.sprites.front_default)
+    .catch((error) => console.error("Error fetching sprite", error));
 };
 
 const getPokemonAbilities = async (link) => {
-  const abilites = [];
+  const abilities = [];
   return fetch(link)
     .then((response) => response.json())
     .then((data) => {
       for (const i of data.abilities) {
-        abilites.push(i.ability.name);
+        abilities.push(i.ability.name);
       }
-      return abilites;
+      return abilities;
     })
     .catch((error) => console.error("Error fetching abilities", error));
 };
@@ -83,40 +77,29 @@ const getPokemonTypes = async (link) => {
       }
       return types;
     })
-    .catch((error) => console.error("Error fetching abilities", error));
+    .catch((error) => console.error("Error fetching types", error));
 };
 
-const createPokemonInfo = (name, sprite, abilites, types) => {
-  const pokemonInfo = {
-    name: name,
-    sprite: sprite,
-    abilites: abilites,
-    types: types,
-  };
-  return pokemonInfo;
+const createPokemonInfo = (name, sprite, abilities, types) => {
+  return { name, sprite, abilities, types };
 };
 
-const createPokemonCard = async () => {
-  const pokemonObject = await getPokemonInfo();
+const createPokemonCard = async (pokemonObject) => {
   pokemonObject.forEach((pokemon) => {
     const newCard = document.createElement("div");
     container.appendChild(newCard);
     newCard.innerHTML = `
-  <div class="card">
-      <div class="card-header">
-        <h1>${pokemon.name}</h1>
-        <img width="200px" src="${pokemon.sprite}" alt="pokemon-img">
-        <ul class="list-container type-list" id="types-list-${typesListCounter}">
-          
-        </ul>
+      <div class="card">
+        <div class="card-header">
+          <h1>${pokemon.name}</h1>
+          <img width="200px" src="${pokemon.sprite}" alt="pokemon-img">
+          <ul class="list-container type-list" id="types-list-${typesListCounter}"></ul>
+        </div>
+        <div class="card-body">
+          <ul class="list-container moves-list" id="moves-list-${movesListCounter}"></ul>
+        </div>
       </div>
-      <div class="card-body">
-        <ul class="list-container moves-list" id="moves-list-${movesListCounter}">
-          
-        </ul>
-      </div>
-    </div>
-  `;
+    `;
 
     const typesList = document.querySelector(`#types-list-${typesListCounter}`);
     for (const element of pokemon.types) {
@@ -124,104 +107,39 @@ const createPokemonCard = async () => {
       typesList.appendChild(newType);
       newType.innerText = element.toUpperCase();
 
-      switch (element) {
-        case "fire":
-          newType.style.backgroundColor = "red"
-          break;
-        case "grass":
-          newType.style.backgroundColor = "green"
-          break;
-        case "poison":
-          newType.style.backgroundColor = "purple"
-          break;
-        case "water":
-          newType.style.backgroundColor = "blue"
-          break;
-        case "flying":
-          newType.style.backgroundColor = "rgba(140, 137, 226, 0.877)"
-          break;
-        case "normal":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "fighting":
-          newType.style.backgroundColor = "rgba(158, 37, 35, 0.877)"
-          break;
-        case "ground":
-          newType.style.backgroundColor = "rgb(234, 181, 36)"
-          break;
-        case "rock":
-          newType.style.backgroundColor = "rgba(151, 138, 23, 0.877)"
-          break;
-        case "bug":
-          newType.style.backgroundColor = "rgba(139, 213, 79, 0.877)"
-          break;
-        case "ghost":
-          newType.style.backgroundColor = "rgba(65, 46, 209, 0.877)"
-          break;
-        case "electric":
-          newType.style.backgroundColor = "yellow"
-          break;
-        case "psychic":
-          newType.style.backgroundColor = "rgba(240, 13, 160, 0.877)"
-          break;
-        case "ice":
-          newType.style.backgroundColor = "rgba(136, 238, 240, 0.877)"
-          break;
-        case "dragon":
-          newType.style.backgroundColor = "rgba(174, 102, 242, 0.877)"
-          break;
-        case "dark":
-          newType.style.backgroundColor = "rgba(79, 35, 32, 0.877)"
-          break;
-        case "steel":
-          newType.style.backgroundColor = "rgb(199, 199, 199)"
-          break;
-        case "fairy":
-          newType.style.backgroundColor = "rgb(242, 197, 230)"
-          break;
-        case "food":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "slug":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "plastic":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "wind":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "crystal":
-          newType.style.backgroundColor = "grey"
-          break;
-        case "light":
-          newType.style.backgroundColor = "grey"
-          break;      
-        default:
-          break;
-      }
+      const colors = {
+        fire: "red", grass: "green", poison: "purple", water: "blue",
+        flying: "rgba(140, 137, 226, 0.877)", normal: "grey",
+        fighting: "rgba(158, 37, 35, 0.877)", ground: "rgb(234, 181, 36)",
+        rock: "rgba(151, 138, 23, 0.877)", bug: "rgba(139, 213, 79, 0.877)",
+        ghost: "rgba(65, 46, 209, 0.877)", electric: "yellow",
+        psychic: "rgba(240, 13, 160, 0.877)", ice: "rgba(136, 238, 240, 0.877)",
+        dragon: "rgba(174, 102, 242, 0.877)", dark: "rgba(79, 35, 32, 0.877)",
+        steel: "rgb(199, 199, 199)", fairy: "rgb(242, 197, 230)",
+        food: "grey", slug: "grey", plastic: "grey", wind: "grey",
+        crystal: "grey", light: "grey"
+      };
+      if (colors[element]) newType.style.backgroundColor = colors[element];
     }
 
     const movesList = document.querySelector(`#moves-list-${movesListCounter}`);
-    for (const element of pokemon.abilites) {
+    for (const element of pokemon.abilities) {
       const newAbility = document.createElement("li");
       movesList.appendChild(newAbility);
       newAbility.innerText = element;
     }
+
     typesListCounter++;
     movesListCounter++;
   });
 };
 
 const main = async () => {
-  await getPokemonArray();
-  console.log(await getPokemonInfo());
-  await createPokemonCard(getPokemonInfo());
+  const newPokemons = await getPokemonArray();
+  const pokemonInfo = await getPokemonInfo(newPokemons);
+  await createPokemonCard(pokemonInfo);
 };
 
-loadBtn.addEventListener("click", async () => {
-  await getPokemonArray();
-  console.log(await getPokemonInfo());
-  await createPokemonCard(getPokemonInfo());
-})
+loadBtn.addEventListener("click", main);
 
+main();
