@@ -32,6 +32,15 @@ body{
   color: var(--text-color);
   gap: 20px;
   margin: 20px;
+  @media (max-width: 924px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 675px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 440px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .card{
@@ -93,6 +102,21 @@ body{
 }
 
 .load-btn{
+  position: fixed;
+  left:5px;
   background-color: var(--bg-secondary-color);
   cursor: pointer;
+}
+
+header{
+  margin: 20px;
+  input{
+    background-color: aliceblue;
+    color: black;
+    padding-left: 5px;
+  }
+  button{
+    background-color: rgb(179, 25, 25);
+    width: 100px;
+  }
 }

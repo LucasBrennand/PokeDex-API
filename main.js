@@ -1,9 +1,9 @@
 const container = document.querySelector("#container");
 const loadBtn = document.querySelector(".load-btn");
+const searchInputValue = document.querySelector("#search-input").value;
+const searchBtn = document.querySelector("#search-btn");
 const pokemonArray = [];
 let offset = 0;
-let movesListCounter = 0;
-let typesListCounter = 0;
 
 const getPokemonArray = async () => {
   const newPokemons = [];
@@ -11,8 +11,8 @@ const getPokemonArray = async () => {
     .then((response) => response.json())
     .then((data) => {
       for (const i of data.results) {
-        pokemonArray.push(i); 
-        newPokemons.push(i); 
+        pokemonArray.push(i);
+        newPokemons.push(i);
       }
       offset += 4;
     })
@@ -23,7 +23,7 @@ const getPokemonArray = async () => {
 const getPokemonInfo = async (pokemonList) => {
   const pokemonInfoArray = [];
   try {
-    for (const pokemon of pokemonList) { // only loop new batch
+    for (const pokemon of pokemonList) {
       const sprite = await getPokemonSprite(pokemon.url);
       if (!sprite) throw new Error("Sprites undefined");
 
@@ -44,6 +44,25 @@ const getPokemonInfo = async (pokemonList) => {
     return pokemonInfoArray;
   } catch (error) {
     console.error(error);
+  }
+};
+
+const getPokemonInfoByName = async () => {
+  const name = document.querySelector("#search-input").value.trim().toLowerCase();
+  if (!name) return [];
+
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    if (!response.ok) throw new Error("Pokémon not found");
+    const data = await response.json();
+
+    const pokemonObj = { name: data.name, url: `https://pokeapi.co/api/v2/pokemon/${data.name}` };
+    pokemonArray.push(pokemonObj);
+
+    return [pokemonObj];
+  } catch (error) {
+    console.error("Get pokemon api error:", error);
+    return [];
   }
 };
 
@@ -85,6 +104,8 @@ const createPokemonInfo = (name, sprite, abilities, types) => {
 };
 
 const createPokemonCard = async (pokemonObject) => {
+  let movesListCounter = 0;
+  let typesListCounter = 0;
   pokemonObject.forEach((pokemon) => {
     const newCard = document.createElement("div");
     container.appendChild(newCard);
@@ -101,28 +122,42 @@ const createPokemonCard = async (pokemonObject) => {
       </div>
     `;
 
-    const typesList = document.querySelector(`#types-list-${typesListCounter}`);
+    const typesList = newCard.querySelector(`#types-list-${typesListCounter}`);
     for (const element of pokemon.types) {
       const newType = document.createElement("li");
       typesList.appendChild(newType);
       newType.innerText = element.toUpperCase();
 
       const colors = {
-        fire: "red", grass: "green", poison: "purple", water: "blue",
-        flying: "rgba(140, 137, 226, 0.877)", normal: "grey",
-        fighting: "rgba(158, 37, 35, 0.877)", ground: "rgb(234, 181, 36)",
-        rock: "rgba(151, 138, 23, 0.877)", bug: "rgba(139, 213, 79, 0.877)",
-        ghost: "rgba(65, 46, 209, 0.877)", electric: "yellow",
-        psychic: "rgba(240, 13, 160, 0.877)", ice: "rgba(136, 238, 240, 0.877)",
-        dragon: "rgba(174, 102, 242, 0.877)", dark: "rgba(79, 35, 32, 0.877)",
-        steel: "rgb(199, 199, 199)", fairy: "rgb(242, 197, 230)",
-        food: "grey", slug: "grey", plastic: "grey", wind: "grey",
-        crystal: "grey", light: "grey"
+        fire: "red",
+        grass: "green",
+        poison: "purple",
+        water: "blue",
+        flying: "rgba(140, 137, 226, 0.877)",
+        normal: "grey",
+        fighting: "rgba(158, 37, 35, 0.877)",
+        ground: "rgb(234, 181, 36)",
+        rock: "rgba(151, 138, 23, 0.877)",
+        bug: "rgba(139, 213, 79, 0.877)",
+        ghost: "rgba(65, 46, 209, 0.877)",
+        electric: "yellow",
+        psychic: "rgba(240, 13, 160, 0.877)",
+        ice: "rgba(136, 238, 240, 0.877)",
+        dragon: "rgba(174, 102, 242, 0.877)",
+        dark: "rgba(79, 35, 32, 0.877)",
+        steel: "rgb(199, 199, 199)",
+        fairy: "rgb(242, 197, 230)",
+        food: "grey",
+        slug: "grey",
+        plastic: "grey",
+        wind: "grey",
+        crystal: "grey",
+        light: "grey",
       };
       if (colors[element]) newType.style.backgroundColor = colors[element];
     }
 
-    const movesList = document.querySelector(`#moves-list-${movesListCounter}`);
+    const movesList = newCard.querySelector(`#moves-list-${movesListCounter}`);
     for (const element of pokemon.abilities) {
       const newAbility = document.createElement("li");
       movesList.appendChild(newAbility);
@@ -140,6 +175,12 @@ const main = async () => {
   await createPokemonCard(pokemonInfo);
 };
 
-loadBtn.addEventListener("click", main);
+const search = async () => {
+  const newPokemon = await getPokemonInfoByName();
+  const pokemonInfo = await getPokemonInfo(newPokemon);
+  await createPokemonCard(pokemonInfo);
+}
 
+loadBtn.addEventListener("click", main);
+searchBtn.addEventListener("click", search);
 main();
