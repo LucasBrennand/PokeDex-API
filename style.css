@@ -54,6 +54,10 @@ body{
   border-radius: 10px;
   box-shadow: 1px 1px 2px black;
   padding: 20px;
+  &:hover{
+    transform: scale(110%);
+    transition: 0.3s;
+  }
   
 }
 
@@ -104,7 +108,7 @@ body{
 .load-btn{
   position: fixed;
   left:5px;
-  background-color: var(--bg-secondary-color);
+  background-color: rgb(179, 25, 25);
   cursor: pointer;
 }
 
@@ -118,5 +122,10 @@ header{
   button{
     background-color: rgb(179, 25, 25);
     width: 100px;
+    cursor: pointer;
   }
+}
+
+.clear-btn{
+  background-color: var(--bg-secondary-color);
 }

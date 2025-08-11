@@ -2,7 +2,8 @@ const container = document.querySelector("#container");
 const loadBtn = document.querySelector(".load-btn");
 const searchInputValue = document.querySelector("#search-input").value;
 const searchBtn = document.querySelector("#search-btn");
-const pokemonArray = [];
+const clearBtn = document.querySelector("#clear-btn")
+let pokemonArray = [];
 let offset = 0;
 
 const getPokemonArray = async () => {
@@ -183,4 +184,9 @@ const search = async () => {
 
 loadBtn.addEventListener("click", main);
 searchBtn.addEventListener("click", search);
+clearBtn.addEventListener("click", () => {
+  pokemonArray = []
+  offset = 0
+  container.innerHTML = ''
+})
 main();
